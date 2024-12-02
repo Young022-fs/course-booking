@@ -6,6 +6,7 @@
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
     <script src="https://kit.fontawesome.com/5327233004.js"></script>    
     <script src="app.js" defer></script>
+    <script src="subjects.js"></script>
     <link rel="stylesheet" href="styles.css">
     <title>Document</title>
 </head>
@@ -46,107 +47,23 @@
                                
             </nav>
             <section class="subjectsContainer">
-                <div class="subject">
-                    <i :class="subject.icon"></i>
-                    <h2 class="subjectName">Math</h2>
-                    <p>Location: G103</p>
-                    <p>Price: $54.99</p>
-                    <p>Available slots: {{subject.availableInventory}}</p>
+                <div v-for="subject in sortedSubjects">
+                    <div class="subject">
+                        <i :class="subject.icon"></i>
+                        <h2 class="subjectName">{{subject.name}}</h2>
+                        <p>Location: {{subject.location}}</p>
+                        <p>Price: {{subject.price}}</p>
+                        <p>Available slots: {{subject.availableInventory}}</p>
 
-                    <button id="addButton" v-if="canAddToCart" @click="addItemToCart">Add to Cart</button>
-                    <button id="addButton" v-else disabled>Add to Cart</button>
-
-                    <span v-if='itemsLeft === 0'>No spaces left</span>
-                    <span v-else-if="itemsLeft < 5">Only {{itemsLeft}} left!</span>
-                    <span v-else>Book now!</span>
-                </div>
-                <div class="subject">
-                    <i class="fa-solid fa-language icon"></i>
-                    <h2 class="subjectName">Foreign Languages</h2>
-                    <p>Location: HA110</p>
-                    <p>Price: $39.99</p>
-                    <p>Available slots: 7</p>
-                    <button id="addButton">Add to Cart</button>
-                </div>
-                <div class="subject">
-                    <i class="fa-solid fa-palette icon"></i>
-                    <h2 class="subjectName">Art</h2>
-                    <p>Location: CG01</p>
-                    <p>Price: $45.99</p>
-                    <p>Available slots: 7</p>
-                    <button id="addButton">Add to Cart</button>
-                </div>
-                <div class="subject">
-                    <i class="fa-solid fa-people-roof icon"></i>
-                    <h2 class="subjectName">Social Studies</h2>
-                    <p>Location: CG02</p>
-                    <p>Price: $24.99</p>
-                    <p>Available slots: 5</p>
-                    <button id="addButton">Add to Cart</button>
-                </div>
-                <div class="subject">
-                    <i class="fa-solid fa-vial icon"></i>
-                    <h2 class="subjectName">Chemistry</h2>
-                    <p>Location: A007</p>
-                    <p>Price: $68.99</p>
-                    <p>Available slots: 9</p>
-                    <button id="addButton">Add to Cart</button>
-                </div>
-                <div class="subject">
-                    <i class="fa-solid fa-gear icon"></i>
-                    <h2 class="subjectName">Engineering</h2>
-                    <p>Location: B102</p>
-                    <p>Price: $64.99</p>
-                    <p>Available slots: 10</p>
-                    <button id="addButton">Add to Cart</button>
-                </div>
-                <div class="subject">
-                    <i class="fa-solid fa-gamepad icon"></i>
-                    <h2 class="subjectName">Game Development</h2>
-                    <p>Location: E103</p>
-                    <p>Price: $84.99</p>
-                    <p>Available slots: 6</p>
-                    <button id="addButton">Add to Cart</button>
-                </div>
-                <div class="subject">
-                    <i class="fa-solid fa-computer icon"></i>
-                    <h2 class="subjectName">Computer Studies</h2>
-                    <p>Location: BG04</p>
-                    <p>Price: $64.99</p>
-                    <p>Available slots: 8</p>
-                    <button id="addButton">Add to Cart</button>
-                </div>
-                <div class="subject">
-                    <i class="fa-solid fa-money-bill-trend-up icon"></i>
-                    <h2 class="subjectName">Economics</h2>
-                    <p>Location: B101</p>
-                    <p>Price: $43.99</p>
-                    <p>Available slots: 6</p>
-                    <button id="addButton">Add to Cart</button>
-                </div>
-                <div class="subject">
-                    <i class="fa-solid fa-brain icon"></i>
-                    <h2 class="subjectName">Psychology</h2>
-                    <p>Location: A110</p>
-                    <p>Price: $43.99</p>
-                    <p>Available slots: 7</p>
-                    <button id="addButton">Add to Cart</button>
-                </div>
-                <div class="subject">
-                    <i class="fa-solid fa-book-open icon"></i>
-                    <h2 class="subjectName">Literature</h2>
-                    <p>Location: BG108</p>
-                    <p>Price: $38.99</p>
-                    <p>Available slots: 5</p>
-                    <button id="addButton">Add to Cart</button>
-                </div>
-                <div class="subject">
-                    <i class="fa-solid fa-landmark-dome icon"></i>
-                    <h2 class="subjectName">History</h2>
-                    <p>Location: CG07</p>
-                    <p>Price: $38.99</p>
-                    <p>Available slots: 9</p>
-                    <button id="addButton">Add to Cart</button>
+                        <button id="addButton" v-if="canAddToCart(subject)" @click="addItemToCart(subject)">Add to Cart</button>
+                        <button id="addButton" v-else :disabled="true">Add to Cart</button>
+                        
+                        <span v-if='subject.availableInventory === cartCount(subject.id)'>All out!</span>
+                        <span v-else-if="subject.availableInventory - cartCount(subject.id) < 5">
+                        Only {{subject.availableInventory - cartCount(subject.id)}} left!
+                        </span>
+                        <span v-else>Buy now!</span>
+                    </div>                
                 </div>
             </section>
         </div>
