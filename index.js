@@ -46,36 +46,6 @@ app.param('collectionName', async function(req, res, next, collectionName) {
     next();
 });
 
-// Ensure this route is defined after the middleware app.param
-// get all data from our collection in Mongodb
-// app.get('/collections/:collectionName', async function(req, res, next) {
-//   try{
-//     const results = await req.collection.find({}).toArray();
-
-//     console.log('Retrived data:', results);
-
-//     res.json(results);
-
-//   }
-//   catch(err){
-//     console.error('Error fetching docs', err.message);
-//     next(err); 
-// }
-    
-// });
-
-// app.get('/collections/:collectionName', async function(req, res, next) {
-//     console.log("Fetching data from collection:", req.collection.collectionName);
-//     try {
-//         const results = await req.collection.find({}).toArray();
-//         console.log("Results fetched:", results);
-//         res.json(results);
-//     } catch (err) {
-//         console.error('Error fetching docs', err.message);
-//         next(err); 
-//     }
-// });
-
 app.get('/collections/:collectionName', async function(req, res, next) {
     console.log("Fetching data from collection:", req.collection.collectionName);  // Log the collection name
     try {
@@ -148,11 +118,36 @@ app.get('/collections/:collectionName/:id' , async function(req, res, next) {
 });
 
 app.post('/collections/:collectionName', async function(req, res, next) {
-    
+  try {
+
+    console.log('Received request: ', req.body);
+
+    const results = await req.collection.insertOne(req.body);
+
+    console.log("Inserted documents:", results);
+
+    res.json(results);
+
+} catch (err) {
+    console.error('Error fetching docs', err.message);
+    next(err); 
+}
 });
 
 app.delete('/collections/:collectionName/:id', async function(req, res, next) {
-    
+  try {
+    console.log('Received request: ', req.params.id);
+
+    const results = await req.collection.deleteOne( {_id: new ObjectId(req.params.id)} );
+
+    console.log("Deleted data:", results);  
+
+    res.json((results.deletedCount === 1) ? {msg: 'success'} : {msg: 'error'});
+  } 
+  catch (err) {
+      console.error('Error fetching docs', err.message);
+      next(err); 
+  }
 });
 
 app.put('/collections/:collectionName/:id', async function(req, res, next) {
