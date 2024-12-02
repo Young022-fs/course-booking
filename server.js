@@ -151,7 +151,21 @@ app.delete('/collections/:collectionName/:id', async function(req, res, next) {
 });
 
 app.put('/collections/:collectionName/:id', async function(req, res, next) {
+  try {
+    console.log('Received request: ', req.params.id);
 
+    const results = await req.collection.updateOne( {_id: new ObjectId(req.params.id)},
+    {$set:req.body}
+   );
+
+    console.log("Updated data:", results);  
+
+    res.json((results.matchedCount === 1) ? {msg: 'success'} : {msg: 'error'});
+  } 
+  catch (err) {
+      console.error('Error fetching docs', err.message);
+      next(err); 
+  }
 });
 
 app.use((err, req, res, next) => {
