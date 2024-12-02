@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
+    <script src="https://kit.fontawesome.com/5327233004.js"></script>    
+    <script src="app.js" defer></script>
+    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
+</head>
+<body>
+    <main id="vue-app">
+        <h1 class="mainHead">Lesson Booking System</h1>
+        <button v-if="showProduct" class="cart" @click="showCheckout">
+            <p class="cartCount">{{itemInCart}}</p>
+            <i class="fa-solid fa-cart-shopping"></i>
+            <p>Checkout</p>
+        </button>
+        <button v-else class="cart homeButton" @click="showCheckout">
+            Back to Home
+        </button>
+        <div v-if="showProduct">
+            <nav class="nav">
+                <label>
+                    Search Lessons
+                    <input type="text" name="lessonSearch">
+                </label>                
+                <label>
+                    Sort By:
+                    <select name="sort" id="sort">
+                        <option value="" disabled>Sort By</option>
+                        <option value="subject">Subject</option>
+                        <option value="location">Location</option>
+                        <option value="price">Price</option>
+                        <option value="availability">Availability</option>
+                    </select>
+                </label>
+                <label>
+                    Display Order:
+                    <select name="order" id="order">
+                        <option value="ascending">Ascending</option>
+                        <option value="descending">Descending</option>
+                    </select>
+                </label>
+                               
+            </nav>
+            <section class="subjectsContainer">
+                <div class="subject">
+                    <i :class="subject.icon"></i>
+                    <h2 class="subjectName">Math</h2>
+                    <p>Location: G103</p>
+                    <p>Price: $54.99</p>
+                    <p>Available slots: {{subject.availableInventory}}</p>
+
+                    <button id="addButton" v-if="canAddToCart" @click="addItemToCart">Add to Cart</button>
+                    <button id="addButton" v-else disabled>Add to Cart</button>
+
+                    <span v-if='itemsLeft === 0'>No spaces left</span>
+                    <span v-else-if="itemsLeft < 5">Only {{itemsLeft}} left!</span>
+                    <span v-else>Book now!</span>
+                </div>
+                <div class="subject">
+                    <i class="fa-solid fa-language icon"></i>
+                    <h2 class="subjectName">Foreign Languages</h2>
+                    <p>Location: HA110</p>
+                    <p>Price: $39.99</p>
+                    <p>Available slots: 7</p>
+                    <button id="addButton">Add to Cart</button>
+                </div>
+                <div class="subject">
+                    <i class="fa-solid fa-palette icon"></i>
+                    <h2 class="subjectName">Art</h2>
+                    <p>Location: CG01</p>
+                    <p>Price: $45.99</p>
+                    <p>Available slots: 7</p>
+                    <button id="addButton">Add to Cart</button>
+                </div>
+                <div class="subject">
+                    <i class="fa-solid fa-people-roof icon"></i>
+                    <h2 class="subjectName">Social Studies</h2>
+                    <p>Location: CG02</p>
+                    <p>Price: $24.99</p>
+                    <p>Available slots: 5</p>
+                    <button id="addButton">Add to Cart</button>
+                </div>
+                <div class="subject">
+                    <i class="fa-solid fa-vial icon"></i>
+                    <h2 class="subjectName">Chemistry</h2>
+                    <p>Location: A007</p>
+                    <p>Price: $68.99</p>
+                    <p>Available slots: 9</p>
+                    <button id="addButton">Add to Cart</button>
+                </div>
+                <div class="subject">
+                    <i class="fa-solid fa-gear icon"></i>
+                    <h2 class="subjectName">Engineering</h2>
+                    <p>Location: B102</p>
+                    <p>Price: $64.99</p>
+                    <p>Available slots: 10</p>
+                    <button id="addButton">Add to Cart</button>
+                </div>
+                <div class="subject">
+                    <i class="fa-solid fa-gamepad icon"></i>
+                    <h2 class="subjectName">Game Development</h2>
+                    <p>Location: E103</p>
+                    <p>Price: $84.99</p>
+                    <p>Available slots: 6</p>
+                    <button id="addButton">Add to Cart</button>
+                </div>
+                <div class="subject">
+                    <i class="fa-solid fa-computer icon"></i>
+                    <h2 class="subjectName">Computer Studies</h2>
+                    <p>Location: BG04</p>
+                    <p>Price: $64.99</p>
+                    <p>Available slots: 8</p>
+                    <button id="addButton">Add to Cart</button>
+                </div>
+                <div class="subject">
+                    <i class="fa-solid fa-money-bill-trend-up icon"></i>
+                    <h2 class="subjectName">Economics</h2>
+                    <p>Location: B101</p>
+                    <p>Price: $43.99</p>
+                    <p>Available slots: 6</p>
+                    <button id="addButton">Add to Cart</button>
+                </div>
+                <div class="subject">
+                    <i class="fa-solid fa-brain icon"></i>
+                    <h2 class="subjectName">Psychology</h2>
+                    <p>Location: A110</p>
+                    <p>Price: $43.99</p>
+                    <p>Available slots: 7</p>
+                    <button id="addButton">Add to Cart</button>
+                </div>
+                <div class="subject">
+                    <i class="fa-solid fa-book-open icon"></i>
+                    <h2 class="subjectName">Literature</h2>
+                    <p>Location: BG108</p>
+                    <p>Price: $38.99</p>
+                    <p>Available slots: 5</p>
+                    <button id="addButton">Add to Cart</button>
+                </div>
+                <div class="subject">
+                    <i class="fa-solid fa-landmark-dome icon"></i>
+                    <h2 class="subjectName">History</h2>
+                    <p>Location: CG07</p>
+                    <p>Price: $38.99</p>
+                    <p>Available slots: 9</p>
+                    <button id="addButton">Add to Cart</button>
+                </div>
+            </section>
+        </div>
+        <div v-else> 
+            <h1>Welcome to the Checkout Page</h1>
+            <label>
+                First Name
+                <input v-model.trim="order.firstname">
+            </label>
+            <label>
+                Last Name
+                <input v-model.trim="order.lastname">
+            </label>            
+            <label>
+                Address: <input v-model="order.address"/>
+            </label>
+            <label>
+                City: <input v-model="order.city"/>
+            </label>
+            <label>
+                State:
+                <select v-model="order.state">
+                <option disabled value="">State</option>
+                <option>Flacq</option>
+                <option>Port Louis</option>
+                <option>Pamplemousses</option>
+                <option>Riviere du Rempart</option>
+                <option>Plaines Wilhems</option>
+                <option>Quatre Bornes</option>
+                </select>
+            </label>
+            <label>
+                Zip/Postal Code: <input v-model.number="order.zip"/>
+            </label>
+            <p><input type="checkbox" id="gift" value="true" v-model="order.gift"
+                v-bind:true-value="order.sendGift" v-bind:false-value="order.dontSendGift">
+                <label for="gift">Ship As Gift?</label>
+            </p>
+            <p>
+                <input type="radio" id="home" value="Home" v-model="order.method">
+                <label for="home">Home</label>
+                <input type="radio" id="business" value="Business" v-model="order.method">
+                <label for="business">Business</label>
+            </p>
+
+            <h2>Order Information</h2>
+            <p>First Name: {{order.firstname}}</p>
+            <p>Last Name: {{order.lastname}}</p>
+            <p>Address: {{order.address}}</p>
+            <p>City: {{order.city}}</p>
+            <p>State: {{order.state}}</p>
+            <p>Zip: {{order.zip}}</p>
+            <p>Ship as a gift: {{order.gift}}</p>
+            <p>Home Delivery: {{order.method}}</p>
+            <button @click="submitCheckOut">Place Order</button>
+        </div>
+    </main>
+</body>
+</html>
