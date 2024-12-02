@@ -4,13 +4,18 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js",
+    "start2": "nodemon indextest.js"
   },
   "author": "Young",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.1",
-    "morgan": "^1.10.0"
-  }
+    "mongodb": "^6.11.0",
+    "nodemon": "^3.1.7",
+    "properties-reader": "^2.3.0"
+  },
+  "devDependencies": {}
 }

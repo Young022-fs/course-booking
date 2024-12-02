@@ -46,6 +46,33 @@ let app1 = new Vue({
             alert('Check-out completed successfully')
         }
     },
+//     created: function() {
+//          fetch("http://localhost:3000/collections/Subjects").then(
+//             function(response) {
+//                  response.json().then(
+//                      function(json) {
+//                          //console.log(json);
+//                          // note that we used ‘webstore.products’
+//                         // instead of 'this.products’
+//                          app1.subjects = json;
+//                          console.log(app1.subjects);
+                         
+//                      }
+//                  )
+//             }
+//          );
+// },
+    created: function() {
+        fetch("http://localhost:3000/collections/Subjects")
+            .then(response => response.json())
+            .then(json => {
+                this.subjects = json; // Use 'this' to refer to Vue instance's data
+                console.log(this.subjects); // Should now work correctly
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error); // Add error handling
+            });
+    },
     computed:{
         itemInCart: function(){
             return this.cart.length || "";

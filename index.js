@@ -30,7 +30,7 @@ async function connectDB() {
   try {
     client.connect();
     console.log('Connected to MongoDB');
-    db1 = client.db('Cluster0');
+    db1 = client.db('processedData');
   } catch (err) {
     console.error('MongoDB connection error:', err);
   }
@@ -48,21 +48,49 @@ app.param('collectionName', async function(req, res, next, collectionName) {
 
 // Ensure this route is defined after the middleware app.param
 // get all data from our collection in Mongodb
-app.get('/collections/:collectionName', async function(req, res, next) {
-  try{
-    const results = await req.collection.find({}).toArray();
+// app.get('/collections/:collectionName', async function(req, res, next) {
+//   try{
+//     const results = await req.collection.find({}).toArray();
 
-    console.log('Retrived data:', results);
+//     console.log('Retrived data:', results);
 
-    res.json(results);
+//     res.json(results);
 
-  }
-  catch(err){
-    console.error('Error fetching docs', err.message);
-    next(err); 
-}
+//   }
+//   catch(err){
+//     console.error('Error fetching docs', err.message);
+//     next(err); 
+// }
     
+// });
+
+// app.get('/collections/:collectionName', async function(req, res, next) {
+//     console.log("Fetching data from collection:", req.collection.collectionName);
+//     try {
+//         const results = await req.collection.find({}).toArray();
+//         console.log("Results fetched:", results);
+//         res.json(results);
+//     } catch (err) {
+//         console.error('Error fetching docs', err.message);
+//         next(err); 
+//     }
+// });
+
+app.get('/collections/:collectionName', async function(req, res, next) {
+    console.log("Fetching data from collection:", req.collection.collectionName);  // Log the collection name
+    try {
+        const results = await req.collection.find({}).toArray();
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'No data found' });
+        }
+        console.log("Results fetched:", results);  // Log the fetched results
+        res.json(results);
+    } catch (err) {
+        console.error('Error fetching docs', err.message);
+        next(err); 
+    }
 });
+
 
 app.get('/collections1/:collectionName', async function(req, res, next) {
   try{
