@@ -1,4 +1,4 @@
-let subjects = [
+let subjectsArr = [
     {
         id: 10001, name: 'Math', location: 'G103', price: '$54.99', availableInventory: 10, icon: 'fa-solid fa-calculator icon'
     },

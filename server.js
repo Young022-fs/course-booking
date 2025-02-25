@@ -1,50 +1,23 @@
-var express = require("express");
+let express = require("express");
 let app = express();
+const mongodbAccess = require('./mongodbAccess'); 
+
 const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 app.set('json spaces', 3);
 const path = require('path');
-let PropertiesReader = require("properties-reader");
 
-let propertiesPath = path.resolve(__dirname, "./dbconnection.properties");
-let properties = PropertiesReader(propertiesPath);
+app.use(express.static('views'))
 
 
-const dbPrefix = properties.get('db.prefix');
-const dbHost = properties.get('db.host');
-const dbName = properties.get('db.name');
-const dbUser = properties.get('db.user');
-const dbPassword = properties.get('db.password');
-const dbParams = properties.get('db.params');
 
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+mongodbAccess.connectDB();
 
-const uri = `${dbPrefix}${dbUser}:${dbPassword}${dbHost}${dbParams}`;
-
-const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
-
-let db1;
-
-async function connectDB() {
-  try {
-    client.connect();
-    console.log('Connected to MongoDB');
-    db1 = client.db('processedData');
-  } catch (err) {
-    console.error('MongoDB connection error:', err);
-  }
-}
-
-connectDB();
-
-
-app.param('collectionName', async function(req, res, next, collectionName) { 
-    req.collection = db1.collection(collectionName);
-    
-    console.log('Middleware set collection:', req.collection.collectionName);
-    next();
-});
+app.use((req, res,next)=>{
+  console.log(`A ${req.method} request come from ${req.url}`);
+  next()
+})
 
 app.get('/collections/:collectionName', async function(req, res, next) {
     console.log("Fetching data from collection:", req.collection.collectionName); 
@@ -64,11 +37,12 @@ app.get('/collections/:collectionName', async function(req, res, next) {
 
 app.get('/collections1/:collectionName', async function(req, res, next) {
   try{
-    const results = await req.collection.find({},{limit:3,sort:{price:-1}}).toArray();
-
-    console.log('Retrived data:', results);
+    // const results = await req.collection.find({},{limit:3,sort:{price:-1}}).toArray();
+    mongodbAccess.getCollection(req.params.collectionName).then((results) => {
+      // console.log('Retrived data:', results);
+      res.json(results);
+    });
     
-    res.json(results);
 
   }
   catch(err){
