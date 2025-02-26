@@ -3,7 +3,7 @@ let app1 = new Vue({
 	data(){
 		return {
 
-			subjects: [],
+			subjects:[],
 			cart: [],
 			showProduct: true,
 			order: {
