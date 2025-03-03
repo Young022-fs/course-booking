@@ -48,6 +48,14 @@ let app1 = new Vue({
 			},
 			search(){
 					let searchValueTemp = this.searchValue
+					fetch(`http://localhost:3000/search/${searchValueTemp}`)
+							.then(response => response.json())
+							.then(json => {
+									this.subjects = json;
+							})
+							.catch(error => {
+									console.error("Error fetching data:", error);
+							});
 					
 			}
 	},
