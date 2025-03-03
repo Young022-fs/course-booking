@@ -58,5 +58,28 @@ async function getCollection(collectionName){
   }
 }
 
+let search = async (searchValue)=>{
+    
+  try {
+    // client.connect();
+    const database = client.db("processedData");
+    const collection = database.collection("Subjects");
 
-module.exports = {connectDB, getCourses, getCollection};
+    const result = await collection.find({
+      $or: [
+        { name: { $regex: searchValue, $options: 'i' } }, 
+        { location: { $regex: searchValue, $options: 'i' } }
+      ]
+    }).toArray();
+   
+    console.log(result);
+    return result
+
+  }catch (error) {
+    console.error(error.message); 
+  }
+
+}
+
+
+module.exports = {connectDB, getCourses, getCollection, search};

@@ -25,7 +25,7 @@
         <nav class="nav">
           <label>
             Search Lessons
-            <input type="text" name="lessonSearch" />
+            <input type="text" name="lessonSearch" v-model="searchValue" @input="search"/>
           </label>
           <label>
             Sort By:

@@ -6,6 +6,7 @@ let app1 = new Vue({
 			subjects:[],
 			cart: [],
 			showProduct: true,
+			searchValue: "",
 			order: {
 					firstname: "", lastname: "", address: "", city: "", state: "", zip: "", method: "Home", gift: false, sendGift: 'Yes', dontSendGift: 'No',
 			}                       
@@ -40,6 +41,14 @@ let app1 = new Vue({
 					},
 			submitCheckOut(){
 					alert('Check-out completed successfully')
+			},
+			removeItemFromCart(subject){
+					let index = this.cart.indexOf(subject.id);
+					this.cart.splice(index, 1);
+			},
+			search(){
+					let searchValueTemp = this.searchValue
+					
 			}
 	},
 

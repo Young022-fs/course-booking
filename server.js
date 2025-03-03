@@ -42,9 +42,6 @@ app.get('/collections1/:collectionName', async function(req, res, next) {
       // console.log('Retrived data:', results);
       res.json(results);
     });
-    
-  
-
   }
   catch(err){
     console.error('Error fetching docs', err.message);
@@ -150,4 +147,19 @@ app.use((err, req, res, next) => {
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
+  });
+
+  app.get("/search/:searchValue", async function(req, res, next) {
+    try {
+      // const results = await req.collection.find({$text:{$search:req.params.searchValue}}).toArray();
+      // console.log("Results fetched:", results);
+      // res.json(results);
+      mongodbAccess.search(req.params.searchValue).then((results) => {
+        console.log("Results fetched:", results);
+        res.json(results);
+      });
+    } catch (err) {
+      console.error("Error fetching docs", err.message);
+      next(err);
+    }
   });
