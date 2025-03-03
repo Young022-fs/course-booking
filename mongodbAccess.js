@@ -4,7 +4,6 @@ let PropertiesReader = require("properties-reader");
 let propertiesPath = path.resolve(__dirname, "./dbconnection.properties");
 let properties = PropertiesReader(propertiesPath);
 
-
 const dbPrefix = properties.get('db.prefix');
 const dbHost = properties.get('db.host');
 const dbName = properties.get('db.name');
@@ -41,7 +40,6 @@ async function getCourses(){
   } catch (error) {
     console.error(error.message);
   }
-
 }
 
 async function getCollection(collectionName){
@@ -78,8 +76,76 @@ let search = async (searchValue)=>{
   }catch (error) {
     console.error(error.message); 
   }
-
 }
 
+// Fixed updateOrderSpaces function
+let updateOrderSpaces = async (orderObject) => {
+  try {
+    const database = client.db("processedData");
+    const collection = database.collection("Subjects");
+    const cart = orderObject.cart || [];
+    
+    console.log("Processing cart items:", cart);
+    
+    // Process each course ID in the cart array
+    for (const courseId of cart) {
+      // Count how many times this course appears in the cart (quantity)
+      const quantity = cart.filter(id => id === courseId).length;
+      
+      // Skip if we've already processed this course ID
+      if (cart.indexOf(courseId) !== cart.lastIndexOf(courseId) && 
+          cart.indexOf(courseId) !== cart.indexOf(courseId)) {
+        continue; // Skip duplicates
+      }
+      
+      const courseData = await collection.findOne({id: courseId});
+      
+      if (!courseData) {
+        console.error(`Course not found: ${courseId}`);
+      } else {
+        if (courseData.availableInventory < quantity) {
+          console.warn(`Not enough space for ${courseId}: requested ${quantity}, available ${courseData.availableInventory}`);
+        } else {
+          const result = await collection.updateOne(
+            {id: courseId}, 
+            {$inc: { availableInventory: -quantity }}
+          );
+          
+          if (result.modifiedCount > 0) {
+            console.log(`Updated ${courseId}: Available spaces decremented by ${quantity}`);
+          } else {
+            console.warn(`No spaces updated for ${courseId}`);
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.error(`Error updating order spaces: ${error.message}`);
+    throw error;
+  }
+}
 
-module.exports = {connectDB, getCourses, getCollection, search};
+// Fixed addOrder function
+let addOrder = async (orderObject) => {
+  try {
+    orderObject.time = new Date();
+    
+    const database = client.db("processedData");
+    const collection = database.collection("orders");
+    
+    console.log("Processing order:", orderObject);
+    
+    const result = await collection.insertOne(orderObject);
+    console.log(`Insertion ${result.insertedId}: Complete`);
+
+    // Update the inventory based on the order
+    await updateOrderSpaces(orderObject);
+    
+    return { success: true, orderId: result.insertedId };
+  } catch (error) {
+    console.error(`Error adding order: ${error.message}`);
+    throw error;
+  }
+}
+
+module.exports = {connectDB, getCourses, getCollection, search, addOrder};
